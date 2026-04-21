@@ -18,4 +18,9 @@ public class MainMenuScript : MonoBehaviour
             #endif
             }
     
+            public void BackToMenu()
+            {
+                SceneManager.LoadScene("Main Menu");
+            }
+    
 }
