@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -34,6 +35,8 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector3.up * JumpForce);
         }
         
+        
+        
     }
 
 
@@ -54,7 +57,7 @@ public class PlayerController : MonoBehaviour
 
         StartCoroutine(ResetPlayer());
         
-        Debug.Log("Mouse is up" + StartPosition.position + endPosition);
+        
     }
 
     private void OnMouseDrag()
@@ -62,7 +65,7 @@ public class PlayerController : MonoBehaviour
         
         transform.position = ConvertMouseInput();
         
-        Debug.Log("Draging the player to = " + ConvertMouseInput());
+        
     }
 
     IEnumerator ResetPlayer()
@@ -84,5 +87,15 @@ public class PlayerController : MonoBehaviour
 
         return mouseWorldPosition;
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Building"))
+        {
+            Destroy(collision.gameObject);
+        }
+    }
+   
     
+        
 }
