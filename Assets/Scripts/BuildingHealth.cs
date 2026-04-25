@@ -23,8 +23,10 @@ public class BuildingHealth : MonoBehaviour
 
         if (currentHealth <= 0f && destroyOnZeroHealth)
         {
+            ScoreManager.Instance?.AddBuildingDestroyed();
             Destroy(gameObject);
         }
     }
-}
+    }
+
 
