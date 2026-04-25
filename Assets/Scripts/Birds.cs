@@ -31,6 +31,8 @@ public class Birds : MonoBehaviour
     [Header("Triple Bird")]
     [SerializeField] private GameObject tripleBirdPrefab;
     [SerializeField] private float tripleSpreadAngle = 12f;
+    [SerializeField] private float tripleMinimumSpawnSpeed = 8f;
+    [SerializeField] private float tripleVelocityEpsilon = 0.5f;
 
     [Header("Activation")]
     [SerializeField] private KeyCode activateAbilityKey = KeyCode.E;
@@ -43,6 +45,7 @@ public class Birds : MonoBehaviour
     private bool abilityUsed;
     private bool spawnedByTriple;
     private float defaultMass;
+    private Vector2 lastMeaningfulVelocity;
 
     public bool IsLaunched => isLaunched;
 
@@ -56,18 +59,32 @@ public class Birds : MonoBehaviour
         {
             defaultMass = rb.mass;
         }
+
+        lastMeaningfulVelocity = Vector2.right * tripleMinimumSpawnSpeed;
     }
 
     private void Update()
     {
+        if (rb != null && rb.linearVelocity.magnitude > tripleVelocityEpsilon)
+        {
+            lastMeaningfulVelocity = rb.linearVelocity;
+        }
+
         if (!isLaunched || abilityUsed)
         {
             return;
         }
 
-        if (abilityType == BirdAbilityType.Bomb && (Input.GetKeyDown(activateAbilityKey) || Input.GetMouseButtonDown(1)))
+        if (abilityType == BirdAbilityType.Bomb && Input.GetKeyDown(activateAbilityKey))
         {
             Explode();
+            return;
+        }
+
+        if (abilityType == BirdAbilityType.TripleShot && Input.GetKeyDown(activateAbilityKey))
+        {
+            SpawnExtraBirds();
+            abilityUsed = true;
         }
     }
 
@@ -85,12 +102,11 @@ public class Birds : MonoBehaviour
             {
                 rb.mass = defaultMass * heavyMassMultiplier;
             }
-        }
 
-        if (abilityType == BirdAbilityType.TripleShot && !spawnedByTriple)
-        {
-            SpawnExtraBirds();
-            abilityUsed = true;
+            if (rb.linearVelocity.magnitude > tripleVelocityEpsilon)
+            {
+                lastMeaningfulVelocity = rb.linearVelocity;
+            }
         }
     }
 
@@ -153,11 +169,6 @@ public class Birds : MonoBehaviour
             Vector2 bounceVelocity = Vector2.Reflect(rb.linearVelocity, normal) * bounceVelocityMultiplier;
             rb.linearVelocity = bounceVelocity;
         }
-
-        if (abilityType == BirdAbilityType.Bomb && !abilityUsed)
-        {
-            Explode();
-        }
     }
 
     private void SpawnExtraBirds()
@@ -177,18 +188,35 @@ public class Birds : MonoBehaviour
         Birds birdScript = newBird.GetComponent<Birds>();
         Rigidbody2D newBirdRb = newBird.GetComponent<Rigidbody2D>();
 
-        if (birdScript != null)
+        Vector2 baseVelocity = rb != null ? rb.linearVelocity : Vector2.zero;
+        if (baseVelocity.magnitude <= tripleVelocityEpsilon)
         {
-            birdScript.MarkAsTripleSpawn();
-            birdScript.OnLaunched();
+            baseVelocity = lastMeaningfulVelocity;
+        }
+
+        if (baseVelocity.magnitude <= tripleVelocityEpsilon)
+        {
+            baseVelocity = (Vector2)transform.right * tripleMinimumSpawnSpeed;
+        }
+
+        if (baseVelocity.magnitude < tripleMinimumSpawnSpeed)
+        {
+            baseVelocity = baseVelocity.normalized * tripleMinimumSpawnSpeed;
         }
 
         if (newBirdRb != null)
         {
-            Vector2 launchVelocity = Quaternion.Euler(0f, 0f, angleOffset) * rb.linearVelocity;
+            Vector2 launchVelocity = Quaternion.Euler(0f, 0f, angleOffset) * baseVelocity;
             newBirdRb.bodyType = RigidbodyType2D.Dynamic;
-            newBirdRb.gravityScale = rb.gravityScale;
+            newBirdRb.gravityScale = rb != null ? rb.gravityScale : 1f;
+            newBirdRb.simulated = true;
             newBirdRb.linearVelocity = launchVelocity;
+        }
+
+        if (birdScript != null)
+        {
+            birdScript.MarkAsTripleSpawn();
+            birdScript.OnLaunched();
         }
     }
 

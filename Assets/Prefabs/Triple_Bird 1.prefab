@@ -200,6 +200,8 @@ MonoBehaviour:
   explosionParticlePrefab: {fileID: 0}
   tripleBirdPrefab: {fileID: 0}
   tripleSpreadAngle: 12
+  tripleMinimumSpawnSpeed: 8
+  tripleVelocityEpsilon: 0.5
   activateAbilityKey: 101
 --- !u!1 &1537359375021386840
 GameObject:
@@ -221,7 +223,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4682629762060172806
 Transform:
   m_ObjectHideFlags: 0
@@ -399,6 +401,8 @@ MonoBehaviour:
   explosionParticlePrefab: {fileID: 0}
   tripleBirdPrefab: {fileID: 0}
   tripleSpreadAngle: 12
+  tripleMinimumSpawnSpeed: 8
+  tripleVelocityEpsilon: 0.5
   activateAbilityKey: 101
 --- !u!1 &8040313452981371228
 GameObject:
@@ -420,7 +424,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6297169820184152615
 Transform:
   m_ObjectHideFlags: 0
@@ -598,4 +602,6 @@ MonoBehaviour:
   explosionParticlePrefab: {fileID: 0}
   tripleBirdPrefab: {fileID: 0}
   tripleSpreadAngle: 12
+  tripleMinimumSpawnSpeed: 8
+  tripleVelocityEpsilon: 0.5
   activateAbilityKey: 101

@@ -11,16 +11,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float JumpForce = 5.0f;
     [SerializeField] private Transform StartPosition;
-    private Vector3 ForceDirection;
     [SerializeField] private float ForceMultiplier = 100f;
-    
-    // Start is called before the first frame update
-    void Start()
+
+    private Vector3 ForceDirection;
+    private Birds bird;
+    private bool isResetting;
+
+    private void Awake()
     {
-        
+        bird = GetComponent<Birds>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         float horizontal = Input.GetAxis("Horizontal");
@@ -34,9 +35,6 @@ public class PlayerController : MonoBehaviour
         {
             rb.AddForce(Vector3.up * JumpForce);
         }
-        
-        
-        
     }
 
 
@@ -48,13 +46,22 @@ public class PlayerController : MonoBehaviour
 
     private void OnMouseUp()
     {
+        if (isResetting)
+        {
+            return;
+        }
+
         Vector3 endPosition = ConvertMouseInput();
         ForceDirection = StartPosition.position - endPosition;
         float forceMagnitude = ForceDirection.magnitude;
+
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.AddForce(ForceDirection * forceMagnitude * ForceMultiplier);
         rb.gravityScale = 1;
 
+        bird?.OnLaunched();
+
+        isResetting = true;
         StartCoroutine(ResetPlayer());
         
         
@@ -62,7 +69,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnMouseDrag()
     {
-        
+        if (isResetting)
+        {
+            return;
+        }
+
         transform.position = ConvertMouseInput();
         
         
@@ -71,9 +82,15 @@ public class PlayerController : MonoBehaviour
     IEnumerator ResetPlayer()
     {
         yield return new WaitForSeconds(5f);
+
         this.transform.position = StartPosition.position;
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
         rb.gravityScale = 0.0f;
         rb.bodyType = RigidbodyType2D.Static;
+
+        bird?.ResetBird();
+        isResetting = false;
     }
     
     
