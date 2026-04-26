@@ -12,14 +12,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float JumpForce = 5.0f;
     [SerializeField] private Transform StartPosition;
     [SerializeField] private float ForceMultiplier = 100f;
+    [SerializeField] private float scaleMultiplier = 2f;
 
     private Vector3 ForceDirection;
     private Birds bird;
     private bool isResetting;
+    private Vector3 defaultScale;
 
     private void Awake()
     {
         bird = GetComponent<Birds>();
+        defaultScale = transform.localScale;
     }
 
     void Update()
@@ -90,6 +93,8 @@ public class PlayerController : MonoBehaviour
         rb.angularVelocity = 0f;
         rb.gravityScale = 0.0f;
         rb.bodyType = RigidbodyType2D.Static;
+        transform.localScale = defaultScale;
+       
 
         bird?.ResetBird();
         isResetting = false;
@@ -112,6 +117,16 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Building"))
         {
             Destroy(collision.gameObject);
+        }
+    }
+    
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Power"))
+        {
+            transform.localScale = defaultScale * scaleMultiplier;
+            Destroy(other.gameObject);
         }
     }
    

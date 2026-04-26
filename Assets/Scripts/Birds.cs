@@ -50,6 +50,9 @@ public class Birds : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         birdCollider = GetComponent<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        
+        rb = GetComponent<Rigidbody2D>();
+        rb.simulated = true; 
 
         if (rb != null)
         {
