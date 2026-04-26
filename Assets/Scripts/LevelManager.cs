@@ -1,10 +1,11 @@
 using UnityEngine;
+using System.Collections;
 
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
 
-    [SerializeField] private int totalBirds = 3;
+    public int totalBirds = 3;
 
     private void Awake()
     {
@@ -26,24 +27,17 @@ public class LevelManager : MonoBehaviour
 
         if (totalBirds <= 0)
         {
-            GameUI.Instance?.ShowLose();
+            StartCoroutine(LoseDelay());
         }
     }
 
-    void UpdateUI()
+    IEnumerator LoseDelay()
     {
-        GameUI.Instance?.SetBirds(totalBirds);
-    }
+        yield return new WaitForSeconds(0.6f);
 
-    void LoseGame()
-    {
-        Debug.Log("YOU LOSE");
-
-        GameUI.Instance?.ShowLose();
-    }
-
-    public int GetBirds()
-    {
-        return totalBirds;
+        if (GameObject.FindGameObjectsWithTag("Building").Length > 0)
+        {
+            GameUI.Instance?.ShowLose();
+        }
     }
 }

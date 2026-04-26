@@ -1,27 +1,30 @@
+using System.Collections;
 using UnityEngine;
 
 public class WinCheck : MonoBehaviour
 {
-    private bool gameStarted = false;
-
-    private void Start()
-    {
-        Invoke("EnableWinCheck", 1f); // wait 1 second
-    }
-
-    void EnableWinCheck()
-    {
-        gameStarted = true;
-    }
+    private bool checking;
 
     void Update()
     {
-        if (!gameStarted) return;
+        if (checking) return;
 
         if (GameObject.FindGameObjectsWithTag("Building").Length == 0)
         {
-            Debug.Log("YOU WIN");
+            checking = true;
+            StartCoroutine(WinDelay());
+        }
+    }
+
+    IEnumerator WinDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        if (GameObject.FindGameObjectsWithTag("Building").Length == 0)
+        {
             GameUI.Instance?.ShowWin();
         }
+
+        checking = false;
     }
 }
