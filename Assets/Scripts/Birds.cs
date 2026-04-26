@@ -44,7 +44,6 @@ public class Birds : MonoBehaviour
     private bool abilityUsed;
     private float defaultMass;
 
-    public bool IsLaunched => isLaunched;
 
     private void Awake()
     {
