@@ -13,26 +13,26 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        UpdateUI();
+        GameUI.Instance?.SetBirds(totalBirds);
     }
 
     public void UseBird()
     {
         totalBirds--;
 
-        UpdateUI();
+        Debug.Log("Bird used: " + totalBirds);
 
-        Debug.Log("Bird used. Left: " + totalBirds);
+        GameUI.Instance?.SetBirds(totalBirds);
 
         if (totalBirds <= 0)
         {
-            LoseGame();
+            GameUI.Instance?.ShowLose();
         }
     }
 
     void UpdateUI()
     {
-        GameUI.Instance?.UpdateBirds(totalBirds);
+        GameUI.Instance?.SetBirds(totalBirds);
     }
 
     void LoseGame()

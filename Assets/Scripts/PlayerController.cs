@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
 
         bird?.OnLaunched();
 
-        ScoreManager.Instance?.AddBirdUsed();
+        LevelManager.Instance?.UseBird();
 
         isResetting = true;
         StartCoroutine(ResetPlayer());

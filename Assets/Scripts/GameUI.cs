@@ -17,23 +17,10 @@ public class GameUI : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
+    public void SetBirds(int count)
     {
-        UpdateBirds(3);
-    }
-
-    public void UpdateBirds(int count)
-    {
-        Debug.Log("UI UPDATE: " + count);
-
-        if (birdText != null)
-        {
-            birdText.text = "Birds: " + count;
-        }
-        else
-        {
-            Debug.LogError("BirdText is NOT assigned in Inspector!");
-        }
+        Debug.Log("UI birds: " + count);
+        birdText.text = "Birds: " + count;
     }
 
     public void ShowWin()
@@ -45,6 +32,8 @@ public class GameUI : MonoBehaviour
 
     public void ShowLose()
     {
+        Debug.Log("SHOW LOSE CALLED");
+
         gameEnded = true;
         endPanel.SetActive(true);
         resultText.text = "YOU LOSE!";
@@ -52,7 +41,10 @@ public class GameUI : MonoBehaviour
 
     public void Restart()
     {
+        Debug.Log("RESTART CLICKED");
         gameEnded = false;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name
+        );
     }
 }
