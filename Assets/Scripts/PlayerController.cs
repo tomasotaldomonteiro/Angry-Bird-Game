@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform StartPosition;
     [SerializeField] private float ForceMultiplier = 100f;
     [SerializeField] private float scaleMultiplier = 2f;
+    
+    InputAction moveAction;
+    PlayerInput input;
 
     private Vector3 ForceDirection;
     private Birds bird;
@@ -23,21 +27,15 @@ public class PlayerController : MonoBehaviour
     {
         bird = GetComponent<Birds>();
         defaultScale = transform.localScale;
+        input = GetComponent<PlayerInput>();
+        moveAction = input.actions.FindAction("Move");
     }
 
     void Update()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-        float jump = Input.GetAxis("Jump") * JumpForce;
-        
-        Vector3 movement = new Vector3(horizontal, 0, vertical);
+        Vector2 movementVector = moveAction.ReadValue<Vector2>();
+        Vector3 movement = new Vector3(movementVector.x, 0, movementVector.y);
         rb.AddForce(movement * Speed);
-
-        if (Input.GetKey(KeyCode.Space))
-        {
-            rb.AddForce(Vector3.up * JumpForce);
-        }
     }
 
 
